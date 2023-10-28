@@ -160,6 +160,7 @@ typedef struct {
 	int utf8mapindex[256];		/* for utf8 as decimal code */
 	char isomap[256][4]; 		/* by these strings */
 	char utf8map[256][8];
+	int didahinput; 
 
 	int comment;				/* status for comments (which will not
 								   be translated to CW), 0 = off, 1 = on,
@@ -277,7 +278,7 @@ int main (int argc, char** argv) {
 
 	readconfig(&cw);
 
-	while((i=getopt(argc,argv, "XOo:w:W:e:f:uc:k:Q:R:pF:s:b:q:a:t:y:S:hnT:N:B:C:g:d:l:E:"))!= -1){
+	while((i=getopt(argc,argv, "XOo:w:W:e:f:uc:k:Q:R:pF:s:b:q:a:t:y:S:hnT:N:B:C:g:d:l:E:m"))!= -1){
 		setparameter(i, optarg, &cw);
 	} 
 
@@ -758,7 +759,12 @@ int makeword(char * text, CWP *cw) {
 
  j = 0;						/* position in 'inpcm' buffer */
 
- for (i = 0; i < strlen(text); i++) {
+ int maxloop = strlen(text);
+ if (cw->didahinput == 1) 
+ {
+	maxloop = 1;
+ }
+ for (i = 0; i < maxloop; i++) {
 	c = (unsigned char) text[i];
 	code = NULL;
 	cw->linepos++;
@@ -775,6 +781,7 @@ int makeword(char * text, CWP *cw) {
 		cw->linepos = 0;
 		cw->linecount++;
 	}
+
 	else if (c == '<') {				/* prosign on */
 		prosign = 1;
 		continue;
@@ -802,7 +809,8 @@ int makeword(char * text, CWP *cw) {
 				last = c;
 			}
 		}
-	}
+	} 
+	
 
 	if (last) continue;				/* first of two-byte character read */
 
@@ -826,6 +834,10 @@ int makeword(char * text, CWP *cw) {
 
 	}
 
+	if (cw->didahinput == 1) {
+		code = text; 
+	}
+	//printf ("%s %s", text, code);
 	/* code contains letter as ./-, now assemble pcm buffer */
 
 	for (w = 0; w < strlen(code) ; w++) {
@@ -997,6 +1009,7 @@ void help (void) {
 	printf(_("         [-N snr] [-B filter bandwidth] [-C filter center]\n"));
 	printf(_("         [-T 0..2] [-g filename] [-l words] [-d seconds]\n"));
 	printf(_("         [-O for OGG output format] \n"));
+	printf(_("         [-m for plan didah input, i.e. .-.-....] \n"));
 	printf(_("         [infile]\n\n"));
 	printf(_("defaults: 25 WpM, 600Hz, RT=FT=50, s=11025Hz, b=16kbps,\n"));
 	printf(_("          c=\"CHAPTER\", o=\"Chapter\" infile = stdin\n"));
@@ -1391,6 +1404,9 @@ void setparameter (char i, char *value, CWP *cw) {
             case 'E':
 				strncpy(cw->configfile, value, 78);
                 readconfig(cw);
+				break;
+			case 'm':
+				cw->didahinput = 1;
 				break;
 
 		} /* switch */
