@@ -1,3 +1,11 @@
+#Patched ebook2cw
+
+For plain "didah" input
+```
+echo .-..... | ./ebook2cw -w 30 -m 
+```
+
+
 ebook2cw v0.8.5 - convert ebooks to morse code - Fabian Kurz, DJ5CW
 ---------------------------------------------------------------------
 
