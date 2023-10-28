@@ -1009,7 +1009,7 @@ void help (void) {
 	printf(_("         [-N snr] [-B filter bandwidth] [-C filter center]\n"));
 	printf(_("         [-T 0..2] [-g filename] [-l words] [-d seconds]\n"));
 	printf(_("         [-O for OGG output format] \n"));
-	printf(_("         [-m for plan didah input, i.e. .-.-....] \n"));
+	printf(_("         [-m for plain didah input, i.e. .-.-....] \n"));
 	printf(_("         [infile]\n\n"));
 	printf(_("defaults: 25 WpM, 600Hz, RT=FT=50, s=11025Hz, b=16kbps,\n"));
 	printf(_("          c=\"CHAPTER\", o=\"Chapter\" infile = stdin\n"));
